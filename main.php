@@ -10,7 +10,7 @@ if (!isset($_SESSION['name'])) { //세션값 확인 일치하지 않으면 다�
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>테스트입니다</title>
+    <title>메인화면 입니다</title>
         <style>
         body{
                 background-color: blanchedalmond;
@@ -30,6 +30,7 @@ if (!isset($_SESSION['name'])) { //세션값 확인 일치하지 않으면 다�
 </head>
 
 <body>
+    <button type ='button' id = 'logout_button' class="btn btn-primary mb-3"> 로그아웃 </button>
         <h1>
             Welcome to Kknock Server
         </h1>
@@ -42,6 +43,12 @@ if (!isset($_SESSION['name'])) { //세션값 확인 일치하지 않으면 다�
             <li>Jung</li>
             <li>Bong</li>
         </ol>
-</body>
+    <script>
+    const logoutButton = document.querySelector('#logout_button');
 
+    logoutButton.addEventListener("click", function(){
+        window.location.href = 'logout.php';
+    });
+</script>
+</body>
 </html>

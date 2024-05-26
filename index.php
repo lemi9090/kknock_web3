@@ -21,7 +21,7 @@
         </div>
 
 
-        <button type='submit' id = 'Login_button' class="btn btn-primary mb-3">로그인 </button><!--폼내용을 전송해야 하니섭및 타입-->
+        <button type='submit' id = 'Login_button' class="btn btn-primary mb-3">로그인 </button><!--폼내용을 전송해야 하니 섭및 타입-->
         <button type='button' id = 'Signup_button' class="btn btn-primary mb-3">회원가입 </button> <!--이동해야하니 버튼 타입-->
 
     </div>
