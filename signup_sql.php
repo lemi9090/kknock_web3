@@ -1,6 +1,6 @@
 <?php
 
-$conn = mysqli_connect("localhost", "root", "Bcd1324!", "test_kknock");
+$conn = mysqli_connect("localhost", "root", "??", "??");
 if ($conn === false) {
     die("연결 실패: " . mysqli_connect_error());
 }
