@@ -1,0 +1,16 @@
+2024-05-29 01:58:06,230 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
+2024-05-29 01:58:06,232 INFO supervisord started with pid 1
+2024-05-29 01:58:07,242 INFO spawned: 'apache2' with pid 7
+2024-05-29 01:58:07,262 INFO spawned: 'mysql' with pid 8
+2024-05-29 01:58:07,279 WARN exited: mysql (exit status 1; not expected)
+2024-05-29 01:58:08,283 INFO success: apache2 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-05-29 01:58:08,288 INFO spawned: 'mysql' with pid 14
+2024-05-29 01:58:08,303 WARN exited: mysql (exit status 1; not expected)
+2024-05-29 01:58:10,310 INFO spawned: 'mysql' with pid 15
+2024-05-29 01:58:10,332 WARN exited: mysql (exit status 1; not expected)
+2024-05-29 01:58:13,338 INFO spawned: 'mysql' with pid 16
+2024-05-29 01:58:13,358 WARN exited: mysql (exit status 1; not expected)
+2024-05-29 01:58:13,358 INFO gave up: mysql entered FATAL state, too many start retries too quickly
+2024-05-29 02:06:16,019 WARN received SIGTERM indicating exit request
+2024-05-29 02:06:16,020 INFO waiting for apache2 to die
+2024-05-29 02:06:17,055 INFO stopped: apache2 (exit status 0)

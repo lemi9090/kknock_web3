@@ -32,8 +32,7 @@ if (!isset($_SESSION['name'])) { //세션값 확인 일치하지 않으면 다�
 <body>
     <button type ='button' id = 'logout_button' class="btn btn-primary mb-3"> 로그아웃 </button>    
     <button type ='button' id = 'about' class ='btn btn-primary mb-3'> ABOUT </button>
-    <button type ='button' id = 'search' class ='btn btn-primary mb-4'> 유저검색 </button>
-    
+
         <h1>
             Welcome to Kknock Server
         </h1>
@@ -50,8 +49,6 @@ if (!isset($_SESSION['name'])) { //세션값 확인 일치하지 않으면 다�
     <script>
     const logoutButton = document.querySelector('#logout_button');
     const aboutButton = document.querySelector('#about');
-    const search_user= document.querySelector('#search');
-
 
     logoutButton.addEventListener("click", function(){
         window.location.href = 'logout.php';
@@ -61,11 +58,7 @@ if (!isset($_SESSION['name'])) { //세션값 확인 일치하지 않으면 다�
         window.location.href = 'about.php';
     });
 
-    search_user.addEventListener("click", function(){
-        window.location.href = 'search_user.html';
-    });
 
 </script>
 </body>
 </html>
-

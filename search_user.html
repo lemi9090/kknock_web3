@@ -1,0 +1,42 @@
+<html>
+<head>
+    <meta charset = "UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>유저검색</title>
+</head>
+<body>
+    <form action= "search_user.php" method="POST" id="search_info"> <!-- 폼을 만들고 그안에 입력받은 정보를 기억한다. 그리고 action ! (다음 행선지도 정한다) --> 
+        <div class="w-50 ml-auto mr-auto mt-5">
+        
+            <div class="mb-3">
+                <label for ="search_user" class ="form-label">유저이름</label>
+                <input type="text" name="search_user" class="form-control" id="search_user" placeholder="검색할 유저이름.">
+            </div>
+            
+            
+        <button type="submit" id="input_user" class="btn btn-primary mb-3">검색</button>
+        <button type = "button" id ='back' class='btn btn-primary mb-3'>뒤로가기</button>
+        </div>   
+    </form>
+    <script>
+    const searchinfo = document.querySelector('#search_info'); // 입력받은 폼의 정보를 자바스크립트 변수에 저장한다. 
+    const searchuser = document.querySelector('#input_user');
+    const search_id = document.querySelector('#search_user');
+    const backButton = document.querySelector('#back');
+
+    searchuser.addEventListener("click", function(e){
+        if(!search_id){
+            alert("검색할 아이디를 입력하세요.");
+            e.preventDefault();
+        }
+    });
+
+    backButton.addEventListener("click", function(){
+            window.location.href = 'main.php';
+        });
+
+    </script>
+</body>
+</html>
+
