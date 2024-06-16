@@ -1,25 +1,23 @@
 <?php
-include '../../db_conn.php';
-
+include '/var/www/html/db_conn.php';
+//echo 'Current directory: ' . getcwd() . '<br>';
 if ($conn === false) {
-    die("연결 실패: " . mysqli_connect_error()); 
+    die("연결 실패: " . mysqli_connect_error());
 }
-$sql = "SELECT id, subject, contents, writer, create_date FROM free_bulletin ORDER BY create_date DESC LIMIT 10";  
+$sql = "SELECT id, subject, contents, writer, create_date FROM free_bulletin ORDER BY create_date DESC LIMIT 10";
 $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
-    // 결과 행을 출력
-    while ($row = $result->fetch_assoc()) {
-        echo '<div class="post-preview">';
-        echo '<a href="post.php?id=' . $row["id"] . '">';
-        echo '<h2 class="post-title">' . htmlspecialchars($row["subject"]) . '</h2>';  
-        echo '<h3 class="post-subtitle">' . substr(htmlspecialchars($row["contents"]), 0, 150) . '...</h3>';  
-        echo '</a>';
-        echo '<p class="post-meta">Posted by <a href="#!">' . htmlspecialchars($row["writer"]) . '</a> on ' . $row["create_date"] . '</p>';  // 작성자와 작성 일자 출력
-        echo '</div><hr class="my-4" />';
+    while ($board = $result->fetch_assoc()) {
+        echo '<tr>';
+        echo '<td>' . htmlspecialchars($board['id']) . '</td>';
+        echo '<td><a href="contents/post_list.php?id=' . $board['id'] . '">' . htmlspecialchars($board['subject']) . '</a></td>';
+        echo '<td>' . htmlspecialchars($board['writer']) . '</td>';
+        echo '<td>' . $board['create_date'] . '</td>';
+        echo '</tr>';
     }
 } else {
-    echo "No posts found.";  // 게시물이 없을 때 메시지 출력
+    echo '<tr><td colspan="4">게시물이 없습니다.</td></tr>';
 }
 $conn->close();  // 데이터베이스 연결 종료
 ?>

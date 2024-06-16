@@ -31,9 +31,9 @@ if (!isset($_SESSION['name'])) {
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="../../index.php">Logout</a>
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="../../about.php">About</a>
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="../../search_user.html">SEARCH_USER</a>
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="free_bulletin.php">자유게시판</a>
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="bulletin/new_bulletin.html">인사게시판</a>
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="bulletin/k_bulletin.html">용어사전</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="../free_bulletin.php">자유게시판</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="../new_bulletin.html">인사게시판</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="../k_bulletin.html">용어사전</a>
                 </div>
             </div>
             <!-- Page content wrapper-->
