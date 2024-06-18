@@ -4,14 +4,14 @@ include '../../db_conn.php';
 
 session_start();
 
-if (!isset($_SESSION['name'])) { 
-    echo "<script>alert('비정상적인 접근입니다. 다시 로그인 해주세요.'); window.location.href='index.php';</script>";
+if (!isset($_SESSION['name'])) {
+    echo "<script>alert('로그인이 필요합니다.'); window.location.href='../../index.php';</script>";
     exit();
 }
 
 $post_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 if ($post_id == 0) {
-    echo "<script>alert('잘못된 접근입니다.'); window.location.href='../free_bulletin.php';</script>";
+    echo "<script>alert('잘못된 접근입니다.'); history.back();</script>";
     exit();
 }
 

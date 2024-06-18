@@ -7,7 +7,7 @@ if (!isset($_SESSION['name'])) {
     echo "<script>alert('로그인이 필요합니다.'); window.location.href='../index.php';</script>";
     exit();
 }
-$_SESSION['board_id'] = 1;
+$_SESSION['board_id'] = 2;
 
 $board_id = isset($_SESSION['board_id']) ? $_SESSION['board_id'] : null;
 
@@ -171,7 +171,7 @@ $board_id = isset($_SESSION['board_id']) ? $_SESSION['board_id'] : null;
                                             $field = $search_type === "writer" ? "writer" : ($search_type === "contents" ? "contents" : "subject");
                                                                         //삼항연산자 : 조건 ? 참일때 값  : 거짓일 때 값 을 유도함. 
 
-                                            $sql = "SELECT id, subject, writer, create_date FROM free_bulletin WHERE board_id = 1 AND $field LIKE ? ORDER BY $order_by";
+                                            $sql = "SELECT id, subject, writer, create_date FROM free_bulletin WHERE board_id = 2 AND $field LIKE ? ORDER BY $order_by";
                                             $stmt = $conn->prepare($sql);
                                             $like_query = "%" . $search_query . "%";
                                             $stmt->bind_param("s", $like_query);
@@ -195,9 +195,8 @@ $board_id = isset($_SESSION['board_id']) ? $_SESSION['board_id'] : null;
 
                                         // 기본 게시물 목록 출력, 검색 안했을 때는 기본 모드.
                                         if($search_active==false){
-                                            if ($board_id == 1) {
-
-                                                $sql = "SELECT id, subject, writer, create_date FROM free_bulletin WHERE board_id = 1 ORDER BY $order_by LIMIT 10";
+                                            if ($board_id == 2) {
+                                                $sql = "SELECT id, subject, writer, create_date FROM free_bulletin WHERE board_id = 2 ORDER BY $order_by LIMIT 10";
                                                 $result = $conn->query($sql);
                                             
                                                 if ($result->num_rows > 0) {

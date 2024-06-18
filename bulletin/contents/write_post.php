@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['name'])) {
-    echo "<script>alert('비정상적인 접근입니다. 다시 로그인 해주세요.'); window.location.href='index.php';</script>";
+    echo "<script>alert('로그인이 필요합니다.'); window.location.href='../../index.php';</script>";
     exit();
 }
 
@@ -32,8 +32,8 @@ if (!isset($_SESSION['name'])) {
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="../../about.php">About</a>
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="../../search_user.html">SEARCH_USER</a>
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="../free_bulletin.php">자유게시판</a>
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="../new_bulletin.html">인사게시판</a>
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="../k_bulletin.html">용어사전</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="../new_bulletin.php">인사게시판</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="../dictionary.php">용어사전</a>
                 </div>
             </div>
             <!-- Page content wrapper-->

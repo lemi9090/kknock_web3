@@ -26,12 +26,12 @@ if (!isset($_SESSION['name'])) { //세션값 확인 일치하지 않으면 다�
             <div class="border-end bg-white" id="sidebar-wrapper">
                 <div class="sidebar-heading border-bottom bg-light">안녕하세요</div>
                 <div class="list-group list-group-flush">
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="../index.php">Logout</a>
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="../about.php">About</a>
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="../search_user.html">SEARCH_USER</a>
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="bulletin/free_bulletin.php?board_id=free">자유게시판</a>
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="bulletin/new_bulletin.html?board_id=Hi">인사게시판</a>
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="bulletin/k_bulletin.html?board_id=dict">용어사전</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="index.php">Logout</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="about.php">About</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="search_user.html">SEARCH_USER</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="bulletin/free_bulletin.php">자유게시판</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="bulletin/new_bulletin.php">인사게시판</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="bulletin/dictionary.php">용어사전</a>
                 </div>
             </div>
             <!-- Page content wrapper-->
