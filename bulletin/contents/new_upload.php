@@ -7,8 +7,15 @@ if (!isset($_SESSION['name'])) {
     echo "<script>alert('비정상적인 접근입니다. 다시 로그인 해주세요.'); window.location.href='../../index.php';</script>";
     exit();
 }
+
 if (isset($_SESSION['board_id'])) {
-  $boardid = $_SESSION['board_id'];  // 세션에서 board_id 가져오기
+    $boardid = $_SESSION['board_id'];
+} elseif (isset($_POST['board_id'])) {
+    $boardid = htmlspecialchars($_POST['board_id'], ENT_QUOTES, 'UTF-8'); // 세션에서 board_id 가져오기
+}else {
+    // board_id가 없을 경우의 처리
+    echo "<script>alert('게시판 ID가 설정되지 않았습니다.'); history.back();</script>";
+    exit();
 }
 
 
@@ -30,12 +37,11 @@ if (isset($_FILES['SelectFile']) && $_FILES['SelectFile']['error'] != UPLOAD_ERR
     $baseDir = '/var/www/html/bulletin/contents/';
     $uploadDir = $baseDir . 'upload/';
 
-    $userFolderName = preg_replace("/[^a-zA-Z0-9]+/", "_", $username); // 파일 트래버셜 공격 방지
-    $titleFolderName = preg_replace("/[^a-zA-Z0-9]+/", "_", $title);
+    $userFolderName = preg_replace("/[^a-zA-Z0-9]+/", "_", $username) ?: "default_user";
+    $titleFolderName = preg_replace("/[^a-zA-Z0-9]+/", "_", $title) ?: "default_title";
     $userDir = $uploadDir . $userFolderName;
     $titleDir = $userDir . '/' . $titleFolderName;
 
-    // 각 디렉터리가 있는지 확인
     if (!is_dir($userDir) && !mkdir($userDir, 0777, true)) {
         error_log("사용자 이름으로 디렉토리 생성 실패!: " . error_get_last()['message']);
         echo '<script>alert("사용자 이름으로 디렉토리 생성 실패!"); history.back();</script>';
@@ -94,7 +100,7 @@ if ($username && $title && $content) {
   $ppstm->bind_param("ssssi", $title, $content, $username, $file_path, $boardid); // SQL 인젝션 방지
   if ($ppstm->execute()) {
         
-        switch ($board_id) {
+        switch ($boardid) {
             case 1:
                 header('Location: ../free_bulletin.php'); 
                 break;
@@ -120,3 +126,4 @@ if ($username && $title && $content) {
 $ppstm->close();
 $conn->close();
 ?>
+
