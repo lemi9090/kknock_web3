@@ -30,7 +30,7 @@ if (!isset($_SESSION['name'])) { //세션값 확인 일치하지 않으면 다�
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="about.php">About</a>
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="search_user.html">SEARCH_USER</a>
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="bulletin/free_bulletin.php">자유게시판</a>
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="bulletin/new_bulletin.php">인사게시판</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="bulletin/new_bulletin.php">방명록</a>
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="bulletin/dictionary.php">용어사전</a>
                 </div>
             </div>
