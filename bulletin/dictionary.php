@@ -17,7 +17,7 @@ $board_id = isset($_SESSION['board_id']) ? $_SESSION['board_id'] : null;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>자유게시판 입니다</title>
+    <title>게시물 검색</title>
     <link href="../css/styles.css" rel="stylesheet" />
     <style>
     .list-table th, .list-table td {
@@ -48,9 +48,6 @@ $board_id = isset($_SESSION['board_id']) ? $_SESSION['board_id'] : null;
     .list-table th:nth-child(3), .list-table td:nth-child(3) { width: 8%; } /* 글쓴이 */
     .list-table th:nth-child(4), .list-table td:nth-child(4) { width: 15%; } /* 작성일 */
     </style>
-
-
-
 </head>
 <body>
     <div class="d-flex" id="wrapper">
