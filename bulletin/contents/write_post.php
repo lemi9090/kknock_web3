@@ -6,6 +6,10 @@ if (!isset($_SESSION['name'])) {
     exit();
 }
 
+if (isset($_SESSION['board_id'])) {
+    $boardid = $_SESSION['board_id'];  // 세션에서 board_id 가져오기
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -61,6 +65,7 @@ if (!isset($_SESSION['name'])) {
                         <div id="in_content">
                             <textarea name="post_content" id="post_content" placeholder="내용" required></textarea>
                         </div>
+                        <input type="hidden" name="board_id" value="<?php echo isset($boardid) ? $boardid : ''; ?>" />
                         <input type="file" name="SelectFile"/>
                         <div class="bt_se">
                             <button type="submit">글 작성</button>
