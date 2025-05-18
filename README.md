@@ -1,7 +1,6 @@
 # kknock_web3
 
-### + whs project 
-### purpose : web hacking test
+###### + whs project (purpose : web hacking test)
 
 ```
 sudo apt update
