@@ -4,126 +4,244 @@ include '/var/www/html/db_conn.php';
 session_start();
 
 if (!isset($_SESSION['name'])) {
-    echo "<script>alert('비정상적인 접근입니다. 다시 로그인 해주세요.'); window.location.href='../../index.php';</script>";
+    echo "<script>alert('로그인이 필요합니다.'); window.location.href='../../index.php';</script>";
     exit();
 }
 
-if (isset($_SESSION['board_id'])) {
-    $boardid = $_SESSION['board_id'];
-} elseif (isset($_POST['board_id'])) {
-    $boardid = htmlspecialchars($_POST['board_id'], ENT_QUOTES, 'UTF-8'); // 세션에서 board_id 가져오기
-}else {
-    // board_id가 없을 경우의 처리
-    echo "<script>alert('게시판 ID가 설정되지 않았습니다.'); history.back();</script>";
+$current_user = $_SESSION['name'];
+
+$post_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+
+if ($post_id == 0) {
+    echo "<script>alert('잘못된 접근입니다.'); window.location.href='../free_bulletin.php';</script>";
     exit();
 }
 
-
-$ppstm = $conn->prepare("INSERT INTO free_bulletin(subject, contents, writer, file_path, board_id) VALUES (?, ?, ?, ?, ?)");
-$username = $_SESSION['name'];
-$title = htmlspecialchars($_POST['post_title'], ENT_QUOTES, 'UTF-8'); // XSS 공격 방지
-$content = htmlspecialchars($_POST['post_content'], ENT_QUOTES, 'UTF-8');
-$date = date('Y-m-d');
-
-$file_path = ''; // 파일 경로 초기화
+$_SESSION['current_post_id'] = $post_id;
 
 
-// 파일이 업로드된 경우 처리
-if (isset($_FILES['SelectFile']) && $_FILES['SelectFile']['error'] != UPLOAD_ERR_NO_FILE) {
-    $tmpfile = $_FILES['SelectFile']['tmp_name'];
-    $o_name = $_FILES['SelectFile']['name'];
-    $image_type = $_FILES['SelectFile']['type'];
+// 댓글 입력 처리
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment_content'])) {
+    $post_id = intval($_POST['post_id']);
+    $parent_id = isset($_POST['parent_id']) ? intval($_POST['parent_id']) : null;
+    $username = $current_user;
+    $contents = htmlspecialchars($_POST['comment_content'], ENT_QUOTES, 'UTF-8');
 
-    $baseDir = '/var/www/html/bulletin/contents/';
-    $uploadDir = $baseDir . 'upload/';
-
-    $userFolderName = preg_replace("/[^a-zA-Z0-9]+/", "_", $username) ?: "default_user";
-    $titleFolderName = preg_replace("/[^a-zA-Z0-9]+/", "_", $title) ?: "default_title";
-    $userDir = $uploadDir . $userFolderName;
-    $titleDir = $userDir . '/' . $titleFolderName;
-
-    if (!is_dir($userDir) && !mkdir($userDir, 0777, true)) {
-        error_log("사용자 이름으로 디렉토리 생성 실패!: " . error_get_last()['message']);
-        echo '<script>alert("사용자 이름으로 디렉토리 생성 실패!"); history.back();</script>';
-        exit();
-    }
-
-    if (!is_dir($titleDir) && !mkdir($titleDir, 0777, true)) {
-        error_log("글 제목으로 디렉터리 만들기 실패! " . error_get_last()['message']);
-        echo '<script>alert("글 제목으로 디렉터리 만들기 실패!"); history.back();</script>';
-        exit();
-    }
-
-    // 최종 디렉터리 (유저 이름 + 게시물 제목)
-    $upload_file = $titleDir . '/' . basename($_FILES['SelectFile']['name']); // 파일 디렉토리 공격 방지
-
-    if (move_uploaded_file($_FILES['SelectFile']['tmp_name'], $upload_file)) {
-        $image_type = $_FILES['SelectFile']['type'];
-        if ($image_type == "image/png" || $image_type == "image/jpeg") {
-          $file_path = $upload_file; 
-          } else {
-                echo '<script>
-                    alert("올릴 수 있는 파일은 png, jpg 파일뿐입니다.");
-                    history.back();</script>'; 
-                exit();
-            }
-
-    } else {
-        echo '<script>alert("파일 업로드 실패: ';
-        switch ($_FILES['SelectFile']['error']) {
-            case UPLOAD_ERR_INI_SIZE:
-                echo 'php.ini 파일의 upload_max_filesize(' . ini_get("upload_max_filesize") . ')보다 큽니다.';
-                break;
-            case UPLOAD_ERR_FORM_SIZE:
-                echo '업로드 한 파일이 Form의 MAX_FILE_SIZE 값보다 큽니다.';
-                break;
-            case UPLOAD_ERR_PARTIAL:
-                echo '파일의 일부분만 전송되었습니다.';
-                break;
-            case UPLOAD_ERR_NO_FILE:
-                echo '파일이 전송되지 않았습니다.';
-                break;
-            case UPLOAD_ERR_NO_TMP_DIR:
-                echo '임시 디렉토리가 없습니다.';
-                break;
-            default:
-                echo '알 수 없는 오류가 발생했습니다.';
-                break;
-        }
-        echo '"); history.back();</script>';
-        exit();
-    }
+    $comment_sql = "INSERT INTO comments (post_id, writer, contents, parent_id) VALUES (?, ?, ?, ?)";
+    $stmt_comment = $conn->prepare($comment_sql);
+    $stmt_comment->bind_param("issi", $post_id, $username, $contents, $parent_id);
+    $stmt_comment->execute();
+    $stmt_comment->close();
 }
 
-// 게시물 작성
-if ($username && $title && $content) {
-  $ppstm->bind_param("ssssi", $title, $content, $username, $file_path, $boardid); // SQL 인젝션 방지
-  if ($ppstm->execute()) {
-        
-        switch ($boardid) {
-            case 1:
-                header('Location: ../free_bulletin.php'); 
-                break;
-            case 2:
-                header('Location: ../new_bulletin.php'); 
-                break;
-            default:
-                header('Location: ../dictionary.php'); 
-                break;
-        }
-        exit();
-  }else {
-      echo "<script>
-      alert('글쓰기에 실패했습니다. 오류: " . $ppstm->error . "');
-      history.back();</script>";
-  }
-} else {
-  echo "<script>
-  alert('모든 필드를 채워주세요.');
-  history.back();</script>";
+// 댓글 수정 처리
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_comment_id'])) {
+    $comment_id = intval($_POST['edit_comment_id']);
+    $contents = htmlspecialchars($_POST['edit_comment_content'], ENT_QUOTES, 'UTF-8');
+
+    $update_sql = "UPDATE comments SET contents = ? WHERE id = ? AND writer = ?";
+    $stmt_update = $conn->prepare($update_sql);
+    $stmt_update->bind_param("sis", $contents, $comment_id, $current_user);
+    $stmt_update->execute();
+    $stmt_update->close();
 }
 
-$ppstm->close();
-$conn->close();
+// 게시물 조회
+$post_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+if ($post_id == 0) {
+    echo "<script>alert('잘못된 접근입니다.'); window.location.href='../free_bulletin.php';</script>";
+    exit();
+}
+
+$sql = "SELECT id, subject, contents, writer, create_date, file_path FROM free_bulletin WHERE id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $post_id);
+$stmt->execute();
+$result = $stmt->get_result();
 ?>
 
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>자유게시판 입니다</title>
+    <link href="../../css/styles.css" rel="stylesheet" />
+    <style>
+    .post-content {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .post-content h1 {
+        color: #333;
+        margin-bottom: 15px;
+    }
+    .post-content p {
+        color: #666;
+        font-size: 0.9em;
+        margin-bottom: 20px;
+    }
+    .post-content div {
+        font-size: 1.1em;
+        line-height: 1.6;
+        text-align: justify;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+    .comments-section {
+        margin-top: 40px;
+    }
+    .comment, .reply {
+        margin-bottom: 20px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+    .comment-form, .reply-form {
+        margin-top: 20px;
+    }
+    .reply {
+        margin-left: 20px;
+    }
+    </style>
+</head>
+<body>
+    <div class="d-flex" id="wrapper">
+        <!-- Sidebar -->
+        <div class="border-end bg-white" id="sidebar-wrapper">
+            <div class="sidebar-heading border-bottom bg-light">자유게시판</div>
+            <div class="list-group list-group-flush">
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" href="../../index.php">Logout</a>
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" href="../../about.php">About</a>
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" href="../../search_user.html">SEARCH_USER</a>
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" href="../free_bulletin.php">자유게시판</a>
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" href="../new_bulletin.php">인사게시판</a>
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" href="../dictionary.php">용어사전</a>
+            </div>
+        </div>
+        <!-- Page content wrapper -->
+        <div id="page-content-wrapper">
+            <!-- Top navigation -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+                <div class="container-fluid">
+                    <button class="btn btn-primary" id="sidebarToggle">Toggle Menu</button>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
+                            <li class="nav-item active"><a class="nav-link" href="../../main.php">Home</a></li>
+                            <li class="nav-item"><a class="nav-link" href="https://www.google.com/finance/">Link</a></li>
+                            <li class="nav-item"><a class="nav-link" href="write_post.php">게시물 등록</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            <!-- Page content -->
+            <div class="container-fluid">
+                <div class="container px-4 px-lg-5">
+                    <div class="row gx-4 gx-lg-5 justify-content-center">
+                        <div class="col-md-10 col-lg-8 col-xl-7">
+                        
+                        <?php
+                        if ($row = $result->fetch_assoc()) {
+                            echo '<div class="post-content">';
+                            echo '<h1>' . htmlspecialchars($row['subject']) . '</h1>';
+                            echo '<p>작성자 : ' . htmlspecialchars($row['writer']) . ' - ' . $row['create_date'] . '</p>';
+                            echo '<div>' . nl2br(htmlspecialchars($row['contents'])) . '</div>';
+                            if (!empty($row['file_path']) && file_exists($row['file_path'])) {
+                                echo '<a href="download.php?id=' . $post_id . '" class="btn btn-primary">Download File</a>';
+                            }
+                            // 게시물 수정 
+                            if ($row['writer'] == $current_user) {
+                                echo '<a href="modify.php?id=' . $post_id . '" class="btn btn-warning">수정</a>';
+                            }
+                            //게시물 삭제
+                            if ($row['writer'] == $current_user){
+                                echo '<a href="remove.php?id=' . $post_id . '" class="btn btn-warning">삭제</a>';
+                            }
+                            echo '</div>';
+                        } else {
+                            echo "<p>게시물을 찾을 수 없습니다. <a href='../free_bulletin.php'>게시판으로 돌아가기</a></p>";
+                        }
+                        ?>
+
+                        <!-- 댓글 입력 폼 -->
+                        <div class="comment-form">
+                            <form action="" method="POST">
+                                <input type="hidden" name="post_id" value="<?php echo $post_id; ?>">
+                                <textarea name="comment_content" rows="4" cols="50" placeholder="댓글을 입력하세요..." required></textarea><br>
+                                <button type="submit" class="btn btn-primary">댓글 등록</button>
+                            </form>
+                        </div>
+
+                        <!-- 댓글 조회 -->
+                        <?php
+                            $sql_comments = "SELECT id, writer, contents, create_date, parent_id FROM comments WHERE post_id = ? ORDER BY create_date ASC";
+                            $stmt_comments = $conn->prepare($sql_comments);
+                            $stmt_comments->bind_param("i", $post_id);
+                            $stmt_comments->execute();
+                            $comments_result = $stmt_comments->get_result();
+
+                            echo '<div class="comments-section">';
+                            if ($comments_result->num_rows > 0) {
+                                while ($comment_row = $comments_result->fetch_assoc()) {
+                                    if ($comment_row['parent_id'] == null) {
+                                        echo '<div class="comment">';
+                                    } else {
+                                        echo '<div class="reply">';
+                                    }
+                                    echo '<p><strong>' . htmlspecialchars($comment_row['writer']) . ':</strong> ' . nl2br(htmlspecialchars($comment_row['contents'])) . '</p>';
+                                    echo '<p>작성일: ' . $comment_row['create_date'] . '</p>';
+                                    
+                                    // 대댓글 입력 폼
+                                    if ($comment_row['parent_id'] == null) {
+                                        echo '<div class="reply-form">';
+                                        echo '<form action="" method="POST">';
+                                        echo '<input type="hidden" name="post_id" value="' . $post_id . '">';
+                                        echo '<input type="hidden" name="parent_id" value="' . $comment_row['id'] . '">';
+                                        echo '<textarea name="comment_content" rows="2" cols="50" placeholder="답글을 입력하세요..." required></textarea><br>';
+                                        echo '<button type="submit" class="btn btn-secondary">답글 등록</button>';
+                                        echo '</form>';
+                                        echo '</div>';  
+                                    }
+
+                                    // 댓글 수정 및 삭제 버튼
+                                    if ($comment_row['writer'] == $current_user) {
+                                        echo '<form action="" method="POST" style="display: inline;">';
+                                        echo '<input type="hidden" name="edit_comment_id" value="' . $comment_row['id'] . '">';
+                                        echo '<textarea name="edit_comment_content" rows="2" cols="50" required>' . htmlspecialchars($comment_row['contents']) . '</textarea>';
+                                        echo '<button type="submit" class="btn btn-warning">수정</button>';
+                                        echo '</form>';
+                                    }
+                                    if ($comment_row['writer'] == $current_user) {
+                                        echo '<form action="delete_comment.php" method="POST" style="display: inline;">';
+                                        echo '<input type="hidden" name="delete_comment_id" value="' . $comment_row['id'] . '">';
+                                        echo '<input type="hidden" name="post_id" value="' . $post_id . '">';
+                                        echo '<button type="submit" class="btn btn-danger">삭제</button>';
+                                        echo '</form>';
+                                    }
+
+                                    echo '</div>';
+                                }
+                            } else {
+                                echo '<p>댓글이 없습니다.</p>';
+                            }
+                            echo '</div>';  // 전체 댓글 섹션을 닫는 태그
+
+                            $stmt_comments->close();
+                            ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/scripts.js"></script>
+</body>
+</html>
