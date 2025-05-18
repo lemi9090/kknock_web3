@@ -1,5 +1,5 @@
 <?php
-include '/??/??/html/db_conn.php';
+include '/var/www/html/db_conn.php';
 
 session_start();
 
@@ -63,7 +63,7 @@ $board_id = isset($_SESSION['board_id']) ? $_SESSION['board_id'] : null;
                 <a class="list-group-item list-group-item-action list-group-item-light p-3" href="../about.php">About</a>
                 <a class="list-group-item list-group-item-action list-group-item-light p-3" href="../search_user.html">SEARCH_USER</a>
                 <a class="list-group-item list-group-item-action list-group-item-light p-3" href="free_bulletin.php">자유게시판</a>
-                <a class="list-group-item list-group-item-action list-group-item-light p-3" href="new_bulletin.php">인사게시판</a>
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" href="new_bulletin.php">방명록</a>
                 <a class="list-group-item list-group-item-action list-group-item-light p-3" href="dictionary.php">용어사전</a>
             </div>
         </div>
@@ -173,9 +173,7 @@ $board_id = isset($_SESSION['board_id']) ? $_SESSION['board_id'] : null;
 
                                             $sql = "SELECT id, subject, writer, create_date FROM free_bulletin WHERE board_id = 1 AND $field LIKE ? ORDER BY $order_by";
                                             $stmt = $conn->prepare($sql);
-					    $like_query = "%" . $search_query . "%";
-					    //$like_query = $search_query;
-					    //error_log("like_query: ". $like_query);
+                                            $like_query = "%" . $search_query . "%";
                                             $stmt->bind_param("s", $like_query);
                                             $stmt->execute();
                                             $result = $stmt->get_result();
@@ -196,25 +194,27 @@ $board_id = isset($_SESSION['board_id']) ? $_SESSION['board_id'] : null;
                                         }
 
                                         // 기본 게시물 목록 출력, 검색 안했을 때는 기본 모드.
-                                        if ($board_id == 1) {
+                                        if($search_active==false){
+                                            if ($board_id == 1) {
 
-                                            $sql = "SELECT id, subject, writer, create_date FROM free_bulletin WHERE board_id = 1 ORDER BY $order_by LIMIT 10";
-                                            $result = $conn->query($sql);
-                                        
-                                            if ($result->num_rows > 0) {
-                                                while ($board = $result->fetch_assoc()) {
-                                                    echo "<tr>";
-                                                    echo "<td>" . htmlspecialchars($board['id']) . "</td>";
-                                                    echo "<td><a href='contents/post_list.php?id=" . htmlspecialchars($board['id']) . "'>" . htmlspecialchars($board['subject']) . "</a></td>";
-                                                    echo "<td>" . htmlspecialchars($board['writer']) . "</td>";
-                                                    echo "<td>" . htmlspecialchars($board['create_date']) . "</td>";
-                                                    echo "</tr>";
+                                                $sql = "SELECT id, subject, contents, writer, create_date FROM free_bulletin WHERE board_id = 1 ORDER BY $order_by LIMIT 10";
+                                                $result = $conn->query($sql);
+                                            
+                                                if ($result->num_rows > 0) {
+                                                    while ($board = $result->fetch_assoc()) {
+                                                        echo "<tr>";
+                                                        echo "<td>" . htmlspecialchars($board['id']) . "</td>";
+                                                        echo "<td><a href='contents/post_list.php?id=" . htmlspecialchars($board['id']) . "'>" . htmlspecialchars($board['subject']) . "</a></td>";
+                                                        echo "<td>" . htmlspecialchars($board['writer']) . "</td>";
+                                                        echo "<td>" . htmlspecialchars($board['create_date']) . "</td>";
+                                                        echo "</tr>";
+                                                    }
+                                                } else {
+                                                    echo "<tr><td colspan='4'>게시물이 없습니다.</td></tr>";
                                                 }
                                             } else {
-                                                echo "<tr><td colspan='4'>게시물이 없습니다.</td></tr>";
+                                                echo "<tr><td colspan='4'>접근 권한이 없습니다.</td></tr>";
                                             }
-                                        } else {
-                                            echo "<tr><td colspan='4'>접근 권한이 없습니다.</td></tr>";
                                         }
                                         ?>
                                 </tbody>
