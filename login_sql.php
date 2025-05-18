@@ -1,18 +1,22 @@
 <?php
     session_start();
-    include "/var/www/html/db_conn.php";
+    include "./db_conn.php";
 
     $id = trim($_POST['input_id']); // 공백 제거 후 입력 받음
     $pw = $_POST['input_pw'];
-    if (strlen($id) > 20 || strlen($pw) > 20) { //이상하게 긴 애들은 제한
-            echo "<script>
-                alert(\"입력 값이 너무 깁니다.\");
-                history.back();
-              </script>";
-            exit;
-        }
-
+    if (strlen($id) < 20 || strlen($pw) < 20) { 
+        echo "<script>
+            alert(\"입력 값이 너무 짧습니다. 20자리 이상으로 입력해 주세요.\");
+            history.back();
+          </script>";
+        exit;
+    }
     
+    if (preg_match('/[\'";#-]/', $user_id) || preg_match('/[\'";#-]/', $hashpw)) {
+        echo "<script>alert('pleas don't try');</script>";
+        exit;
+    }
+
     $ppstm = $conn->prepare("SELECT * FROM users WHERE user_id=?");  //sql 방지를 위한 바인딩 작업
     $ppstm->bind_param("s", $id);
     $ppstm->execute();
