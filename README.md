@@ -20,5 +20,25 @@ mv kknock_web3 html
 mysql -u root -p < init_db.sql
 ```
 
+#### mysql 설정 오류
+db_conn.php에서 실제 환경에 맞게 수정했나요?
+mysql에 초기 설정에 root 비밀번호를 수정했나요?
+했다면 아래 설정 확인..
+```
+mysql> SELECT user, host, plugin FROM mysql.user WHERE user='root';
++------+-----------+-------------+
+| user | host      | plugin      |
++------+-----------+-------------+
+| root | localhost | auth_socket |
++------+-----------+-------------+
+```
+auth_socket 이면 외부 접근이 안됨.
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '[원하는비번]';하고 FLUSH PRIVILEGES;로 초기화
+```
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'aaaaa';
+FLUSH PRIVILEGES;
+exit;
 
+service mysql restart
+```
 
