@@ -1,7 +1,7 @@
 -- init_db.sql
 
-CREATE DATABASE vuln_thang_thang;
-USE vuln_thang_thang;
+CREATE DATABASE tung;
+USE tung;
 
 
 -- users 테이블
