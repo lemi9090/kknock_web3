@@ -42,13 +42,13 @@ if (isset($_FILES['SelectFile']) && $_FILES['SelectFile']['error'] != UPLOAD_ERR
     $userDir = $uploadDir . $userFolderName;
     $titleDir = $userDir . '/' . $titleFolderName;
 
-    if (!is_dir($userDir) && !mkdir($userDir, 0777, true)) {
+    if (!is_dir($userDir) && !mkdir($userDir, 0755, true)) {
         error_log("사용자 이름으로 디렉토리 생성 실패!: " . error_get_last()['message']);
         echo '<script>alert("사용자 이름으로 디렉토리 생성 실패!"); history.back();</script>';
         exit();
     }
 
-    if (!is_dir($titleDir) && !mkdir($titleDir, 0777, true)) {
+    if (!is_dir($titleDir) && !mkdir($titleDir, 0755, true)) {
         error_log("글 제목으로 디렉터리 만들기 실패! " . error_get_last()['message']);
         echo '<script>alert("글 제목으로 디렉터리 만들기 실패!"); history.back();</script>';
         exit();
