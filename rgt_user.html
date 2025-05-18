@@ -1,50 +1,71 @@
-<html>
+<!DOCTYPE html>
+<html lang="ko">
 <head>
-    <meta charset = "UTF-8">
+    <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>회원가입창입니다</title>
+    <title>회원가입 창</title>
+    <style>
+        body {
+          background-color: #000;
+          color: #00FF00;
+          font-family: Arial, sans-serif;
+          text-align: center;
+        }
+    </style>
 </head>
 <body>
-    <form action= "signup_sql.php" method="POST" id="signup-form"> <!-- 폼을 만들고 그안에 입력받은 정보를 기억한다. 그리고 action ! (다음 행선지도 정한다) --> 
+    <form action="signup_sql.php" method="POST" id="signup-form"> 
         <div class="w-50 ml-auto mr-auto mt-5">
-        
             <div class="mb-3">
-            <label for ="user_id" class ="form-label">아이디</label>
-            <input type="text" name="user_id" class="form-control" 
-                id="user_id" placeholder="아이디를 입력해 주세요.">
+                <label for="user_id" class="form-label">아이디</label>
+                <input type="text" name="user_id" class="form-control" id="user_id" placeholder="특수문자 제외, 20~30자리 이상의 아이디를 입력해 주세요.">
             </div>
-        
             <div class="mb-3">
-            <label for="password" class="form-label">비밀번호</label>
-            <input name="password" type="password" class="form-control" id="password" placeholder="비밀번호를 입력해 주세요.">
+                <label for="password" class="form-label">비밀번호</label>
+                <input name="password" type="password" class="form-control" id="password" placeholder="특수문자 제외, 20~30자리 이상의 비밀번호를 입력해 주세요.">
             </div>
-        
-            <div class="mb-3 ">
-            <label for="passwordCheck" class="form-label">비밀번호 확인</label>
-            <input type="password" class="form-control" id="password-check" placeholder="비밀번호를 입력해 주세요.">
-            </div>
-        
             <div class="mb-3">
-            <label for="email" class="form-label">이메일 등록</label>
-            <input type="email" class="form-control" id="email" name="email" placeholder="이메일을 입력해 주세요.">
+                <label for="passwordCheck" class="form-label">비밀번호 확인</label>
+                <input type="password" class="form-control" id="password-check" placeholder="비밀번호를 입력해 주세요.">
             </div>
-        
-          
-        <button type="button" id="signup-button" class="btn btn-primary mb-3">회원가입</button>
+            <div class="mb-3">
+                <label for="email" class="form-label">이메일 등록</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="이메일을 입력해 주세요.">
+            </div>
+            <button type="button" id="signup-button" class="btn btn-primary mb-3">회원가입</button>
         </div>   
     </form>
     <script>
-    const signupForm = document.querySelector('#signup-form'); // 입력받은 폼의 정보를 자바스크립트 변수에 저장한다. 
+    const signupForm = document.querySelector('#signup-form'); // 입력받은 폼의 정보를 자바스크립트 변수에 저장한다.
+    const userid = document.querySelector('#user_id');
     const signupButton = document.querySelector('#signup-button');
     const password = document.querySelector('#password');
     const passwordCheck = document.querySelector('#password-check');
 
     signupButton.addEventListener("click", function(e){
+        if (/[^a-zA-Z0-9]/.test(userid.value) || 
+        /[^a-zA-Z0-9]/.test(password.value) || 
+        /[^a-zA-Z0-9]/.test(passwordCheck.value)) {
+        alert("pleas don't try");
+        return;
+        }
+        
+        if (userid.value.length < 20){
+            alert("id는 20자리 이상으로 입력해 주세요")
+            return;
+        }
+        
+        if (password.value.length < 20){
+            alert("pw는 20자리 이상으로 입력해 주세요")
+            return;
+        }
+        
         if (password.value && password.value === passwordCheck.value) {
             signupForm.submit(); //조건이 완료됐으면 submit 한다. -> 이건 폼 초반에 설정된 action 으로 간다. 
         } else {
             alert("비밀번호가 서로 일치하지 않습니다");
+            return;
         }
     });
 
