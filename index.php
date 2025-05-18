@@ -4,6 +4,14 @@
     <meta http-equiv="X-UA-Compatible" content = "IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    <style>
+        body {
+          background-color: #000;
+          color: #00FF00;
+          font-family: Arial, sans-serif;
+          text-align: center;
+        }
+    </style>
 </head>
 
 <body>
