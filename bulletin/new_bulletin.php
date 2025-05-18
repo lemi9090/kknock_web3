@@ -9,7 +9,7 @@ if (!isset($_SESSION['name'])) {
 }
 $_SESSION['board_id'] = 2;
 
-$board_id = isset($_SESSION['board_id']) ? $_SESSION['board_id'] : null;
+$board_id = isset($_SESSION['board_id']) ? $_SESSION['board_id'] : null; # 삼항연산
 
 ?>
 
@@ -18,7 +18,7 @@ $board_id = isset($_SESSION['board_id']) ? $_SESSION['board_id'] : null;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>자유게시판 입니다</title>
+    <title>방명록</title>
     <link href="../css/styles.css" rel="stylesheet" />
     <style>
     .list-table th, .list-table td {
@@ -63,7 +63,7 @@ $board_id = isset($_SESSION['board_id']) ? $_SESSION['board_id'] : null;
                 <a class="list-group-item list-group-item-action list-group-item-light p-3" href="../about.php">About</a>
                 <a class="list-group-item list-group-item-action list-group-item-light p-3" href="../search_user.html">SEARCH_USER</a>
                 <a class="list-group-item list-group-item-action list-group-item-light p-3" href="free_bulletin.php">자유게시판</a>
-                <a class="list-group-item list-group-item-action list-group-item-light p-3" href="new_bulletin.php">인사게시판</a>
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" href="new_bulletin.php">방명록</a>
                 <a class="list-group-item list-group-item-action list-group-item-light p-3" href="dictionary.php">용어사전</a>
             </div>
         </div>
