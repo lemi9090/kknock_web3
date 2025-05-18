@@ -1,11 +1,16 @@
 <?php
 session_start();
-include "/???/db_conn.php";
+include "./db_conn.php";
 
 $searchUser = trim($_POST["search_user"]);
 
-if (strlen($searchUser) > 12) {
+if (strlen($searchUser) > 30) {
     alertAndBack("입력 값이 너무 깁니다."); // alertBack 에 참조대로 아래 메시지 변수에서 출력
+}
+
+if (preg_match('/[\'";#-]/', $searchUser) ) {
+    echo "<script>alert('pleas don't try');</script>";
+    exit;
 }
 
 $ppstm = $conn->prepare("SELECT * FROM users WHERE user_id=?");
