@@ -9,6 +9,11 @@ sudo apt install php libapache2-mod-php -y
 sudo apt install mysql-server -y
 sudo apt install php-mysqli -y
 
+cd /etc/php/8.1/apache2
+vi php.ini
+post_max_size = 2M -> post_max_size = 12M 으로 수정
+upload_max_filesize = 2M -> upload_max_filesize = 20M 으로 수정
+
 
 # /var/www에서
 git clone https://github.com/lemi9090/kknock_web3
