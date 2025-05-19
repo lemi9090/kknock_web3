@@ -52,5 +52,5 @@ service mysql restart
 #### upload 오류 해결
 ```
 sudo chown -R www-data:www-data /var/www/html/bulletin/contents/upload
-sudo chmod -R 755 /var/www/html/bulletin/contents/upload 
+sudo chmod -R 777 /var/www/html/bulletin/contents/upload 
 ```
